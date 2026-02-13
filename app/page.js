@@ -1,65 +1,170 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { products } from "../data/products";
+import { useCart } from "../context/CartContext";
+import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
 
 export default function Home() {
+  const { addToCart } = useCart();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="bg-gray-50 overflow-hidden">
+
+      {/* ================= HERO SLIDER ================= */}
+      <section className="h-[75vh]">
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{ delay: 3500 }}
+          loop
+          className="h-full"
+        >
+          {products.slice(0, 3).map((product) => (
+            <SwiperSlide key={product.id}>
+              <div className="relative h-full flex items-center text-white">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="absolute inset-0 w-full h-full object-cover brightness-50"
+                />
+                <div className="relative z-10 max-w-7xl mx-auto px-6">
+                  <h1 className="text-5xl font-bold mb-6">
+                    {product.title}
+                  </h1>
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="bg-[var(--color-primary)] px-8 py-3 rounded-lg"
+                  >
+                    Shop Now
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </section>
+
+      {/* ================= FEATURED SLIDER ================= */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-6">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Featured Products
+          </h2>
+
+          <Swiper
+            slidesPerView={2}
+            spaceBetween={20}
+            breakpoints={{
+              768: { slidesPerView: 4 },
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            {products.slice(0, 6).map((product) => (
+              <SwiperSlide key={product.id}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition p-4 relative"
+                >
+                  {/* SALE BADGE */}
+                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                    SALE
+                  </span>
+
+                  <Link href={`/products/${product.id}`}>
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-40 object-cover rounded-lg mb-4"
+                    />
+                  </Link>
+
+                  <h3 className="font-semibold mb-2">
+                    {product.title}
+                  </h3>
+
+                  <p className="text-[var(--color-primary)] font-bold mb-3">
+                    ₹{product.price}
+                  </p>
+
+                  <button
+                    onClick={() => addToCart(product)}
+                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-2 rounded-lg transition"
+                  >
+                    Add to Cart
+                  </button>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+        </div>
+      </section>
+
+      {/* ================= CATEGORY BANNERS ================= */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+
+          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
+            <img
+              src="https://images.unsplash.com/photo-1518444028797-43d0f2f3e5b1"
+              className="w-full h-full object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
+              Electronics
+            </div>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
+            <img
+              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
+              Fashion
+            </div>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
+            <img
+              src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
+              Accessories
+            </div>
+          </motion.div>
+
         </div>
-      </main>
+      </section>
+
+      {/* ================= EXPLORE ALL ================= */}
+      <section className="py-24 bg-[var(--color-primary)] text-white text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-3xl mx-auto px-6"
+        >
+          <h2 className="text-4xl font-bold mb-6">
+            Explore the Full Collection
+          </h2>
+
+          <p className="mb-8 opacity-90">
+            Find products that match your style and elevate your lifestyle.
+          </p>
+
+          <Link
+            href="/products"
+            className="bg-white text-[var(--color-primary)] px-8 py-3 rounded-lg font-semibold"
+          >
+            Browse All Products
+          </Link>
+        </motion.div>
+      </section>
+
     </div>
   );
 }
