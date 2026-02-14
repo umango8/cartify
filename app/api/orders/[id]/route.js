@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/db";
 import Order from "@/models/Order";
+import Product from "@/models/Product";
+
 import { NextResponse } from "next/server";
 
 export async function PUT(req, context) {
@@ -24,6 +26,14 @@ export async function PUT(req, context) {
       );
     }
 
+    // 🔥 RESTORE STOCK
+    for (const item of order.items) {
+      await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: item.quantity } }
+      );
+    }
+
     order.status = "cancelled";
     await order.save();
 
@@ -38,6 +48,7 @@ export async function PUT(req, context) {
     );
   }
 }
+
 export async function PATCH(req, context) {
   try {
     await connectDB();

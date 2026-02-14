@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import PageNavigation from "@/components/ui/Pagenation";
 
 export default function AdminOrdersPage() {
   const { user } = useAuth();
@@ -70,6 +71,10 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="max-w-6xl mx-auto mt-12 space-y-6">
+         <PageNavigation
+                previous="/"
+                next="/cart"
+              />
       <h1 className="text-3xl font-bold">
         Manage Orders
       </h1>

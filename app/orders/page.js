@@ -2,40 +2,49 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
+import PageNavigation from "@/components/ui/Pagenation";
+
 
 export default function OrdersPage() {
   const { user } = useAuth();
+  const router = useRouter();
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Fetch Orders
-  useEffect(() => {
-    if (!user) return;
+ useEffect(() => {
+  if (!user) return;
 
-    const fetchOrders = async () => {
-      try {
-      const res = await fetch(
-  `/api/orders?userId=${user.id}`,
-  {
-    method: "GET",
-    cache: "no-store",
-  }
-);
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(`/api/orders?userId=${user.id}`, {
+        cache: "no-store",
+      });
 
+      const data = await res.json();
 
-        const data = await res.json();
-        setOrders(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        setError(data.message || "Failed to load orders.");
+        setOrders([]);  // ✅ important
+        return;
       }
-    };
 
-    fetchOrders();
-  }, [user]);
+      setOrders(Array.isArray(data) ? data : []); // ✅ safety
+    } catch (err) {
+      console.log(err);
+      setError("Failed to load orders.");
+      setOrders([]); // ✅ safety
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Cancel Order
+  fetchOrders();
+}, [user]);
+
+
   const cancelOrder = async (orderId) => {
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
@@ -45,11 +54,10 @@ export default function OrdersPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message);
+        setError(data.message);
         return;
       }
 
-      // Update UI instantly
       setOrders((prev) =>
         prev.map((order) =>
           order._id === orderId
@@ -57,113 +65,141 @@ export default function OrdersPage() {
             : order
         )
       );
-
-    } catch (error) {
-      console.log(error);
-      alert("Something went wrong");
+    } catch (err) {
+      console.log(err);
+      setError("Something went wrong.");
     }
   };
 
   if (!user) {
     return (
-      <p className="text-center mt-10">
-        Please login to see your orders.
-      </p>
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
+        <p className="text-gray-600 text-lg">
+          Please login to view your orders.
+        </p>
+      </div>
     );
   }
 
   if (loading) {
     return (
-      <p className="text-center mt-10">
-        Loading orders...
-      </p>
-    );
-  }
-
-  if (orders.length === 0) {
-    return (
-      <p className="text-center mt-10">
-        No orders found.
-      </p>
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
+        <p className="text-gray-500 text-lg">Loading orders...</p>
+      </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <h1 className="text-3xl font-bold mb-6">
-        My Orders
-      </h1>
+    <div className=" bg-[#f5f5f7] py-20 px-6">
+        <PageNavigation
+              previous="/"
+              next="/cart"
+            />
+      <div className="max-w-5xl mx-auto">
 
-      {orders.map((order) => (
-        <div
-          key={order._id}
-          className="bg-white shadow-md rounded-xl p-6"
-        >
-          {/* Header */}
-          <div className="flex justify-between mb-4">
-            <div>
-              <p className="text-sm text-gray-500">
-                Order ID: {order._id}
-              </p>
-              <p className="text-sm text-gray-500">
-                Date:{" "}
-                {new Date(order.createdAt).toLocaleString()}
-              </p>
-            </div>
+        <h1 className="text-4xl font-semibold tracking-tight mb-14">
+          My Orders
+        </h1>
 
-            <span
-              className={`text-sm px-3 py-1 rounded-full capitalize ${
-                order.status === "cancelled"
-                  ? "bg-red-100 text-red-600"
-                  : order.status === "delivered"
-                  ? "bg-green-100 text-green-600"
-                  : "bg-yellow-100 text-yellow-700"
-              }`}
+        {error && (
+          <p className="mb-6 text-sm text-red-500">
+            {error}
+          </p>
+        )}
+
+        {orders.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl shadow-sm">
+            <p className="text-gray-600 text-lg">
+              You haven’t placed any orders yet.
+            </p>
+            <button
+              onClick={() => router.push("/products")}
+              className="mt-6 bg-black text-white px-8 py-3 rounded-full hover:opacity-90 transition"
             >
-              {order.status}
-            </span>
+              Browse Products
+            </button>
           </div>
-
-          {/* Items */}
-          <div className="space-y-4">
-            {order.items.map((item) => (
+        ) : (
+          <div className="space-y-10">
+            {orders.map((order) => (
               <div
-                key={item._id}
-                className="flex justify-between items-center border-b pb-2"
+                key={order._id}
+                className="bg-white rounded-3xl p-8 shadow-[0_15px_50px_rgba(0,0,0,0.05)]"
               >
-                <div>
-                  <p className="font-medium">
-                    {item.product?.title}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Qty: {item.quantity}
-                  </p>
+                {/* Header */}
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      Order #{order._id.slice(-6)}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(order.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+
+                  <span
+                    className={`text-xs px-4 py-1 rounded-full capitalize ${
+                      order.status === "cancelled"
+                        ? "bg-gray-200 text-gray-600"
+                        : order.status === "delivered"
+                        ? "bg-black text-white"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
                 </div>
 
-                <p className="font-semibold">
-                  ₹{item.product?.price * item.quantity}
-                </p>
+                {/* Items */}
+              <div className="space-y-4">
+  {order.items.map((item) => {
+    const price = Number(item.product?.price || 0);
+    const total = price * item.quantity;
+
+    return (
+      <div
+        key={item._id}
+        className="flex justify-between items-center border-b border-gray-100 pb-3"
+      >
+        <div>
+          <p className="font-medium text-black">
+            {item.product?.name || "Product"}
+          </p>
+          <p className="text-sm text-gray-500">
+            Qty: {item.quantity}
+          </p>
+        </div>
+
+        <p className="font-medium">
+          ₹{total}
+        </p>
+      </div>
+    );
+  })}
+</div>
+
+
+                {/* Footer */}
+                <div className="flex justify-between items-center mt-6">
+                  <p className="text-lg font-medium">
+                    Total: ₹{order.totalAmount}
+                  </p>
+
+                  {order.status === "pending" && (
+                    <button
+                      onClick={() => cancelOrder(order._id)}
+                      className="border border-black px-6 py-2 rounded-full text-sm hover:bg-black hover:text-white transition"
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
+        )}
 
-          {/* Footer */}
-          <div className="flex justify-between items-center mt-4">
-            <div className="font-bold">
-              Total: ₹{order.totalAmount}
-            </div>
-
-            {order.status === "pending" && (
-              <button
-                onClick={() => cancelOrder(order._id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition"
-              >
-                Cancel Order
-              </button>
-            )}
-          </div>
-        </div>
-      ))}
+      </div>
     </div>
   );
 }

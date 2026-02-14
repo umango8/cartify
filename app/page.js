@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,34 +11,64 @@ import "swiper/css";
 export default function Home() {
   const { addToCart } = useCart();
 
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
+        <p className="text-gray-500 text-lg">Loading products...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-50 overflow-hidden">
+    <div className="bg-[#f5f5f7] overflow-hidden">
 
       {/* ================= HERO SLIDER ================= */}
-      <section className="h-[75vh]">
+      <section className="h-[80vh]">
         <Swiper
           modules={[Autoplay]}
-          autoplay={{ delay: 3500 }}
+          autoplay={{ delay: 4000 }}
           loop
           className="h-full"
         >
           {products.slice(0, 3).map((product) => (
-            <SwiperSlide key={product.id}>
-              <div className="relative h-full flex items-center text-white">
+            <SwiperSlide key={product._id}>
+              <div className="relative h-full flex items-center">
                 <img
                   src={product.image}
-                  alt={product.title}
-                  className="absolute inset-0 w-full h-full object-cover brightness-50"
+                  alt={product.name}
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-10 max-w-7xl mx-auto px-6">
-                  <h1 className="text-5xl font-bold mb-6">
-                    {product.title}
+                <div className="absolute inset-0 bg-black/40" />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-8 text-white">
+                  <h1 className="text-5xl md:text-6xl font-semibold tracking-tight mb-6 max-w-2xl">
+                    {product.name}
                   </h1>
+
                   <Link
-                    href={`/products/${product.id}`}
-                    className="bg-[var(--color-primary)] px-8 py-3 rounded-lg"
+                    href={`/products/${product._id}`}
+                    className="bg-white text-black px-8 py-3 rounded-full font-medium hover:opacity-90 transition"
                   >
-                    Shop Now
+                    Discover
                   </Link>
                 </div>
               </div>
@@ -47,122 +77,125 @@ export default function Home() {
         </Swiper>
       </section>
 
-      {/* ================= FEATURED SLIDER ================= */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* ================= FEATURED PRODUCTS ================= */}
+      <section className="py-28">
+        <div className="max-w-7xl mx-auto px-8">
 
-          <h2 className="text-3xl font-bold mb-8">
+          <h2 className="text-4xl font-semibold tracking-tight mb-14">
             Featured Products
           </h2>
 
-          <Swiper
-            slidesPerView={2}
-            spaceBetween={20}
-            breakpoints={{
-              768: { slidesPerView: 4 },
-            }}
-          >
-            {products.slice(0, 6).map((product) => (
-              <SwiperSlide key={product.id}>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition p-4 relative"
-                >
-                  {/* SALE BADGE */}
-                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                    SALE
-                  </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {products.slice(0, 4).map((product) => (
+              <motion.div
+                key={product._id}
+                whileHover={{ y: -6 }}
+                className="bg-white rounded-3xl p-5 transition-all duration-500 hover:shadow-xl"
+              >
+                <Link href={`/products/${product._id}`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-60 object-cover rounded-2xl mb-5"
+                  />
+                </Link>
 
-                  <Link href={`/products/${product.id}`}>
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="w-full h-40 object-cover rounded-lg mb-4"
-                    />
-                  </Link>
+                <h3 className="font-medium text-lg mb-2">
+                  {product.name}
+                </h3>
 
-                  <h3 className="font-semibold mb-2">
-                    {product.title}
+                <p className="text-gray-500 text-sm mb-4">
+                  ₹{product.price}
+                </p>
+
+           <div className="flex gap-3">
+  <button
+    onClick={() => addToCart(product)}
+    className="flex-1 border border-black text-black py-2.5 rounded-full hover:bg-black hover:text-white transition"
+  >
+    Add
+  </button>
+
+  <button
+    onClick={() => {
+      addToCart(product);
+      window.location.href = "/checkout";
+    }}
+    className="flex-1 bg-black text-white py-2.5 rounded-full hover:opacity-90 transition"
+  >
+    Buy Now
+  </button>
+</div>
+
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TRENDING PRODUCTS ================= */}
+      <section className="py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-8">
+
+          <h2 className="text-4xl font-semibold tracking-tight mb-14">
+            Trending Now
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            {products.slice(4, 7).map((product) => (
+              <motion.div
+                key={product._id}
+                whileHover={{ scale: 1.02 }}
+                className="rounded-3xl overflow-hidden bg-[#f5f5f7]"
+              >
+                <Link href={`/products/${product._id}`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-72 object-cover"
+                  />
+                </Link>
+
+                <div className="p-6">
+                  <h3 className="text-xl font-medium mb-2">
+                    {product.name}
                   </h3>
 
-                  <p className="text-[var(--color-primary)] font-bold mb-3">
+                  <p className="text-gray-600 mb-4">
                     ₹{product.price}
                   </p>
 
                   <button
                     onClick={() => addToCart(product)}
-                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-2 rounded-lg transition"
+                    className="bg-black text-white px-6 py-2 rounded-full hover:opacity-90 transition"
                   >
-                    Add to Cart
+                    Shop
                   </button>
-                </motion.div>
-              </SwiperSlide>
+                </div>
+              </motion.div>
             ))}
-          </Swiper>
-
+          </div>
         </div>
       </section>
 
-      {/* ================= CATEGORY BANNERS ================= */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-
-          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
-            <img
-              src="https://images.unsplash.com/photo-1518444028797-43d0f2f3e5b1"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
-              Electronics
-            </div>
-          </motion.div>
-
-          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
-            <img
-              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
-              Fashion
-            </div>
-          </motion.div>
-
-          <motion.div whileHover={{ scale: 1.02 }} className="relative h-60 rounded-2xl overflow-hidden shadow-lg">
-            <img
-              src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-2xl font-bold">
-              Accessories
-            </div>
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* ================= EXPLORE ALL ================= */}
-      <section className="py-24 bg-[var(--color-primary)] text-white text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto px-6"
-        >
-          <h2 className="text-4xl font-bold mb-6">
-            Explore the Full Collection
+      {/* ================= EXPLORE MORE ================= */}
+      <section className="py-32 bg-[#f5f5f7] text-center">
+        <div className="max-w-3xl mx-auto px-8">
+          <h2 className="text-5xl font-semibold tracking-tight mb-6">
+            Explore More Products
           </h2>
 
-          <p className="mb-8 opacity-90">
-            Find products that match your style and elevate your lifestyle.
+          <p className="text-gray-600 mb-10">
+            Discover a curated collection designed for modern living.
           </p>
 
           <Link
             href="/products"
-            className="bg-white text-[var(--color-primary)] px-8 py-3 rounded-lg font-semibold"
+            className="bg-black text-white px-10 py-3 rounded-full font-medium hover:opacity-90 transition"
           >
-            Browse All Products
+            Browse Collection
           </Link>
-        </motion.div>
+        </div>
       </section>
 
     </div>

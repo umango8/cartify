@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
@@ -13,8 +14,13 @@ export default function LoginPage() {
     password: "",
   });
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -28,59 +34,106 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message);
+        if (data.message === "User not found") {
+          setError("No account found. Please sign up first.");
+        } else {
+          setError("Invalid email or password.");
+        }
+        setLoading(false);
         return;
       }
 
-      // Save user & token
       login(data.user, data.token);
-
-      alert("Login Successful ✅");
-
       router.push("/");
     } catch (error) {
-      console.log(error);
-      alert("Something went wrong");
+      setError("Something went wrong. Try again.");
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-96"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Login to Cartify
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] px-6">
+      <div className="w-full max-w-md">
 
-        <input
-          type="email"
-          placeholder="Email"
-          required
-          className="w-full border p-3 rounded-lg mb-4"
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
+        <div className="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-10">
+          
+          <h2 className="text-3xl font-semibold tracking-tight text-center">
+            Welcome Back
+          </h2>
 
-        <input
-          type="password"
-          placeholder="Password"
-          required
-          className="w-full border p-3 rounded-lg mb-6"
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
-        />
+          <p className="text-center text-gray-500 mt-2 text-sm">
+            Sign in to continue to Cartify
+          </p>
 
-        <button
-          type="submit"
-          className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg"
-        >
-          Login
-        </button>
-      </form>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+
+            {/* Email */}
+            <div>
+              <label className="text-sm text-gray-600">Email</label>
+              <input
+                type="email"
+                required
+                placeholder="you@example.com"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300 
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+                onChange={(e) =>
+                  setForm({ ...form, email: e.target.value })
+                }
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="text-sm text-gray-600">Password</label>
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300 
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+                onChange={(e) =>
+                  setForm({ ...form, password: e.target.value })
+                }
+              />
+
+              {/* Error Message */}
+              {error && (
+                <p className="mt-2 text-sm text-red-500 animate-fadeIn">
+                  {error}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 bg-black text-white py-3 rounded-full font-medium 
+              hover:opacity-90 hover:scale-[1.02] transition-all duration-300
+              disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+
+          <div className="my-8 flex items-center">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="px-4 text-sm text-gray-400">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          <p className="text-center text-sm text-gray-600">
+            Don’t have an account?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-black hover:underline"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

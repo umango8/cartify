@@ -15,6 +15,7 @@ export default function RegisterPage() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,14 +23,18 @@ export default function RegisterPage() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
     if (!form.username || !form.email || !form.password || !form.confirmPassword) {
-      setError("Please fill all fields");
+      setError("Please fill all fields.");
+      setLoading(false);
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
+      setError("Passwords do not match.");
+      setLoading(false);
       return;
     }
 
@@ -49,42 +54,35 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message);
+        setError(data.message || "Registration failed.");
+        setLoading(false);
         return;
       }
 
-      alert("Registration Successful ✅");
       router.push("/login");
     } catch (err) {
-      console.log(err);
-      setError("Something went wrong");
+      setError("Something went wrong. Try again.");
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
-      <div className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white p-12">
-        <h1 className="text-5xl font-bold mb-6">Join Cartify</h1>
-        <p className="text-lg text-center max-w-md opacity-90">
-          Create your account and start exploring a modern shopping experience.
-        </p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] px-6">
+      <div className="w-full max-w-md">
 
-      <div className="flex items-center justify-center bg-gray-50 p-8">
-        <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-10">
-          <h2 className="text-3xl font-bold mb-2 text-gray-800">
-            Create Account 🚀
+        <div className="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-10">
+          
+          <h2 className="text-3xl font-semibold tracking-tight text-center">
+            Create Account
           </h2>
 
-          <p className="text-gray-500 mb-6">
-            Start your journey with Cartify
+          <p className="text-center text-gray-500 mt-2 text-sm">
+            Join Cartify and start shopping
           </p>
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
+          <form onSubmit={handleRegister} className="mt-8 space-y-5">
 
-          <form onSubmit={handleRegister} className="space-y-5">
+            {/* Username */}
             <div>
               <label className="text-sm text-gray-600">Username</label>
               <input
@@ -92,10 +90,14 @@ export default function RegisterPage() {
                 name="username"
                 value={form.username}
                 onChange={handleChange}
-                className="w-full mt-1 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
+                placeholder="john_doe"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
               />
             </div>
 
+            {/* Email */}
             <div>
               <label className="text-sm text-gray-600">Email</label>
               <input
@@ -103,10 +105,14 @@ export default function RegisterPage() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full mt-1 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
+                placeholder="you@example.com"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
               />
             </div>
 
+            {/* Password */}
             <div>
               <label className="text-sm text-gray-600">Password</label>
               <input
@@ -114,10 +120,14 @@ export default function RegisterPage() {
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                className="w-full mt-1 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
+                placeholder="••••••••"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
               />
             </div>
 
+            {/* Confirm Password */}
             <div>
               <label className="text-sm text-gray-600">Confirm Password</label>
               <input
@@ -125,25 +135,45 @@ export default function RegisterPage() {
                 name="confirmPassword"
                 value={form.confirmPassword}
                 onChange={handleChange}
-                className="w-full mt-1 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
+                placeholder="••••••••"
+                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+                focus:bg-white border transition-all duration-300
+                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
               />
+
+              {/* Error Message */}
+              {error && (
+                <p className="mt-2 text-sm text-red-500">
+                  {error}
+                </p>
+              )}
             </div>
 
+            {/* Button */}
             <button
               type="submit"
-              className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-3 rounded-lg transition"
+              disabled={loading}
+              className="w-full mt-4 bg-black text-white py-3 rounded-full font-medium 
+              hover:opacity-90 hover:scale-[1.02] transition-all duration-300
+              disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Sign Up
+              {loading ? "Creating account..." : "Sign Up"}
             </button>
           </form>
 
-          <p className="text-sm text-center mt-6">
+          <div className="my-8 flex items-center">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="px-4 text-sm text-gray-400">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-[var(--color-primary)] font-semibold"
+              className="font-medium text-black hover:underline"
             >
-              Login
+              Sign in
             </Link>
           </p>
         </div>

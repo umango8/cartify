@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../../context/AuthContext";
 import { useRouter } from "next/navigation";
+import PageNavigation from "@/components/ui/Pagenation";
 
 
 export default function EditProductPage({ params }) {
@@ -89,22 +90,29 @@ useEffect(() => {
     return <p className="text-center mt-10">Loading...</p>;
   }
 
-  return (
-    <div className="max-w-4xl mx-auto mt-12">
-      <h1 className="text-3xl font-bold mb-8">
-        Edit Product
-      </h1>
+ return (
+  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <PageNavigation previous="/" next="/cart" />
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md space-y-6"
-      >
+    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-center sm:text-left">
+      Edit Product
+    </h1>
+
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-5 sm:p-8 rounded-2xl shadow-lg space-y-6"
+    >
+      
+      {/* Basic Info Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <input
           type="text"
           name="title"
           value={form.title}
           onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg"
+          placeholder="Product Title"
+          className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
 
         <input
@@ -112,7 +120,8 @@ useEffect(() => {
           name="price"
           value={form.price}
           onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg"
+          placeholder="Price"
+          className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
 
         <input
@@ -120,7 +129,8 @@ useEffect(() => {
           name="stock"
           value={form.stock}
           onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg"
+          placeholder="Stock"
+          className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
 
         <input
@@ -128,19 +138,26 @@ useEffect(() => {
           name="category"
           value={form.category}
           onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg"
+          placeholder="Category"
+          className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
+      </div>
 
-        <textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg"
-        />
+      {/* Description */}
+      <textarea
+        name="description"
+        value={form.description}
+        onChange={handleChange}
+        placeholder="Product Description"
+        rows="4"
+        className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
 
-        <div className="space-y-3">
-          <p className="font-semibold">Product Images</p>
+      {/* Images Section */}
+      <div className="space-y-4">
+        <p className="font-semibold text-lg">Product Images</p>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {form.images.map((img, index) => (
             <input
               key={index}
@@ -149,48 +166,56 @@ useEffect(() => {
               onChange={(e) =>
                 handleImageChange(index, e.target.value)
               }
-              className="w-full border px-4 py-2 rounded-lg"
+              placeholder={`Image URL ${index + 1}`}
+              className="w-full border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           ))}
         </div>
+      </div>
 
-        <div className="flex gap-6">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.isFeatured}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  isFeatured: e.target.checked,
-                })
-              }
-            />
-            Featured
-          </label>
+      {/* Checkboxes */}
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.isFeatured}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                isFeatured: e.target.checked,
+              })
+            }
+            className="w-5 h-5"
+          />
+          <span>Featured Product</span>
+        </label>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.isTrending}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  isTrending: e.target.checked,
-                })
-              }
-            />
-            Trending
-          </label>
-        </div>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.isTrending}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                isTrending: e.target.checked,
+              })
+            }
+            className="w-5 h-5"
+          />
+          <span>Trending Product</span>
+        </label>
+      </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg"
-        >
-          Update Product
-        </button>
-      </form>
-    </div>
-  );
+      {/* Submit Button */}
+      <button
+        type="submit"
+        className="w-full bg-[var(--color-primary)] text-white py-3 sm:py-4 rounded-xl text-sm sm:text-base font-semibold hover:opacity-90 transition"
+      >
+        Update Product
+      </button>
+
+    </form>
+  </div>
+);
+
 }

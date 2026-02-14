@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "next/navigation";
+import PageNavigation from "@/components/ui/Pagenation";
 
 export default function AdminUsersPage() {
   const { user } = useAuth();
@@ -80,62 +81,89 @@ export default function AdminUsersPage() {
     return <p className="text-center mt-10">Loading...</p>;
   }
 
-  return (
-    <div className="max-w-6xl mx-auto mt-12 space-y-6">
-      <h1 className="text-3xl font-bold">
-        Manage Users
-      </h1>
+ return (
+  <div className="min-h-screen bg-[#f5f5f7]">
 
-      {users.map((u) => (
-        <div
-          key={u._id}
-          className="bg-white p-6 rounded-xl shadow-md flex justify-between items-center"
-        >
-          <div>
-            <p className="font-semibold">
-              {u.username}
-            </p>
-            <p className="text-gray-500">
-              {u.email}
-            </p>
+    <PageNavigation previous="/" next={null} />
+
+    <div className="max-w-6xl mx-auto px-6 py-10">
+
+      {/* Heading */}
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+          Manage Users
+        </h1>
+        <p className="text-gray-500 mt-2 text-sm md:text-base">
+          Control user roles and access
+        </p>
+      </div>
+
+      {/* Users List */}
+      <div className="space-y-6">
+
+        {users.map((u) => (
+          <div
+            key={u._id}
+            className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 
+                       flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+          >
+
+            {/* User Info */}
+            <div>
+              <p className="font-semibold text-lg">
+                {u.username}
+              </p>
+              <p className="text-gray-500 text-sm">
+                {u.email}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-wrap items-center gap-3">
+
+              {/* Role Select */}
+              <select
+                value={u.role}
+                onChange={(e) =>
+                  updateUser(u._id, "role", e.target.value)
+                }
+                className="px-3 py-2 rounded-full border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+
+              {/* Block / Unblock */}
+              <button
+                onClick={() =>
+                  updateUser(u._id, "isBlocked", !u.isBlocked)
+                }
+                className={`px-4 py-2 rounded-full text-sm transition ${
+                  u.isBlocked
+                    ? "bg-green-500 text-white hover:opacity-90"
+                    : "bg-yellow-500 text-white hover:opacity-90"
+                }`}
+              >
+                {u.isBlocked ? "Unblock" : "Block"}
+              </button>
+
+              {/* Delete */}
+              <button
+                onClick={() => deleteUser(u._id)}
+                className="px-4 py-2 rounded-full bg-red-500 text-white text-sm hover:opacity-90 transition"
+              >
+                Delete
+              </button>
+
+            </div>
+
           </div>
+        ))}
 
-          <div className="flex items-center gap-4">
+      </div>
 
-            <select
-              value={u.role}
-              onChange={(e) =>
-                updateUser(u._id, "role", e.target.value)
-              }
-              className="border px-2 py-1 rounded"
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-
-            <button
-              onClick={() =>
-                updateUser(u._id, "isBlocked", !u.isBlocked)
-              }
-              className={`px-3 py-1 rounded ${
-                u.isBlocked
-                  ? "bg-green-500 text-white"
-                  : "bg-yellow-500 text-white"
-              }`}
-            >
-              {u.isBlocked ? "Unblock" : "Block"}
-            </button>
-
-            <button
-              onClick={() => deleteUser(u._id)}
-              className="px-3 py-1 bg-red-500 text-white rounded"
-            >
-              Delete
-            </button>
-
-          </div>
-        </div>
-      ))}
     </div>
-  );
+  </div>
+);
+
 }

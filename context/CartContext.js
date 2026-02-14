@@ -7,7 +7,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
-  // Load cart from localStorage
+  // Load cart
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -15,11 +15,12 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // Save cart to localStorage
+  // Save cart
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // ✅ Add to cart
   const addToCart = (product) => {
     setCartItems((prev) => {
       const existingItem = prev.find(
@@ -27,6 +28,11 @@ export function CartProvider({ children }) {
       );
 
       if (existingItem) {
+        // Prevent exceeding stock
+        if (existingItem.quantity >= product.stock) {
+          return prev;
+        }
+
         return prev.map((item) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
@@ -38,24 +44,34 @@ export function CartProvider({ children }) {
     });
   };
 
+  // ✅ Remove item
   const removeFromCart = (_id) => {
     setCartItems((prev) =>
       prev.filter((item) => item._id !== _id)
     );
   };
 
+  // ✅ Update quantity safely
   const updateQuantity = (_id, quantity) => {
     setCartItems((prev) =>
-      prev.map((item) =>
-        item._id === _id
-          ? { ...item, quantity }
-          : item
-      )
+      prev.map((item) => {
+        if (item._id !== _id) return item;
+
+        if (quantity < 1) return item;
+
+        if (quantity > item.stock) {
+          return item;
+        }
+
+        return { ...item, quantity };
+      })
     );
   };
 
+  // ✅ Clear cart
   const clearCart = () => {
     setCartItems([]);
+    localStorage.removeItem("cart");
   };
 
   return (

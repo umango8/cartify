@@ -1,5 +1,6 @@
 "use client";
 
+import PageNavigation from "@/components/ui/Pagenation";
 import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
 
@@ -8,59 +9,80 @@ export default function AdminPage() {
 
   if (!user || user.role !== "admin") {
     return (
-      <div className="text-center mt-20 text-red-500 font-semibold">
-        Access Denied 🚫
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
+        <p className="text-red-500 font-semibold text-lg">
+          Access Denied 🚫
+        </p>
       </div>
     );
   }
-else{
- return (
-    <div className="max-w-5xl mx-auto mt-12 space-y-8">
-      <h1 className="text-3xl font-bold">
-        Admin Dashboard
-      </h1>
 
-      <div className="grid md:grid-cols-3 gap-6">
+  return (
+    <div className="min-h-screen bg-[#f5f5f7]">
 
-        <Link
-          href="/admin/products"
-          className="bg-white shadow-md p-6 rounded-xl hover:shadow-xl transition"
-        >
-          <h2 className="text-xl font-semibold mb-2">
-            Manage Products
-          </h2>
-          <p className="text-gray-500 text-sm">
-            Add, edit, delete products
+      {/* Top Navigation */}
+      <PageNavigation next={null} />
+
+      <div className="max-w-6xl mx-auto px-6 py-10">
+
+        {/* Heading */}
+        <div className="mb-12">
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+            Admin Dashboard
+          </h1>
+          <p className="text-gray-500 mt-2 text-sm md:text-base">
+            Manage your store efficiently
           </p>
-        </Link>
+        </div>
 
-        <Link
-          href="/admin/orders"
-          className="bg-white shadow-md p-6 rounded-xl hover:shadow-xl transition"
-        >
-          <h2 className="text-xl font-semibold mb-2">
-            Manage Orders
-          </h2>
-          <p className="text-gray-500 text-sm">
-            Update order status
-          </p>
-        </Link>
+        {/* Grid */}
+        <div className="grid gap-6 
+                        grid-cols-1 
+                        sm:grid-cols-2 
+                        lg:grid-cols-3">
 
-        <Link
-          href="/admin/users"
-          className="bg-white shadow-md p-6 rounded-xl hover:shadow-xl transition"
-        >
-          <h2 className="text-xl font-semibold mb-2">
-            Manage Users
-          </h2>
-          <p className="text-gray-500 text-sm">
-            View and manage users
-          </p>
-        </Link>
+          {/* Products */}
+          <Link
+            href="/admin/products"
+            className="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+          >
+            <h2 className="text-xl font-semibold mb-3 group-hover:text-black">
+              Manage Products
+            </h2>
+            <p className="text-gray-500 text-sm">
+              Add, edit, and delete products in your store.
+            </p>
+          </Link>
+
+          {/* Orders */}
+          <Link
+            href="/admin/orders"
+            className="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+          >
+            <h2 className="text-xl font-semibold mb-3 group-hover:text-black">
+              Manage Orders
+            </h2>
+            <p className="text-gray-500 text-sm">
+              Track and update customer orders.
+            </p>
+          </Link>
+
+          {/* Users */}
+          <Link
+            href="/admin/users"
+            className="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+          >
+            <h2 className="text-xl font-semibold mb-3 group-hover:text-black">
+              Manage Users
+            </h2>
+            <p className="text-gray-500 text-sm">
+              View and manage registered users.
+            </p>
+          </Link>
+
+        </div>
 
       </div>
     </div>
   );
-}
- 
 }

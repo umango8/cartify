@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 
               {!isAuthPage && <Navbar />}
 
-              <main className={!isAuthPage ? "max-w-7xl mx-auto px-6 py-10 min-h-screen" : ""}>
+              <main className={!isAuthPage ? "max-w-7xl mx-auto px-6 " : ""}>
                 {children}
               </main>
 
