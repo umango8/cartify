@@ -118,7 +118,8 @@ return (
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-       {featuredProducts.map((product)  => (
+       {Array.isArray(featuredProducts) &&
+  featuredProducts.map((product)  => (
             <motion.div
               key={product._id}
               whileHover={{ y: -6 }}
@@ -183,7 +184,8 @@ return (
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-         {trendingProducts.map((product) => (
+        {Array.isArray(trendingProducts) &&
+  trendingProducts.map((product) => (
             <motion.div
               key={product._id}
               whileHover={{ scale: 1.02 }}
