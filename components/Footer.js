@@ -2,27 +2,27 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-32 bg-[#f5f5f7]">
-      
-      <div className="max-w-7xl mx-auto px-8 py-20">
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-14">
+    <footer className="mt-24 bg-[#f5f5f7]">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
 
           {/* Brand */}
-          <div className="space-y-5">
-            <h2 className="text-2xl font-semibold tracking-tight text-black">
+          <div className="space-y-5 text-center sm:text-left">
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-black">
               Cartify
             </h2>
 
-            <p className="text-gray-600 leading-relaxed text-sm max-w-xs">
+            <p className="text-gray-600 leading-relaxed text-sm max-w-xs mx-auto sm:mx-0">
               A refined ecommerce experience built with performance,
               simplicity and premium design principles.
             </p>
           </div>
 
           {/* Explore */}
-          <div>
-            <h3 className="text-sm font-semibold text-black mb-5 uppercase tracking-wide">
+          <div className="text-center sm:text-left">
+            <h3 className="text-xs sm:text-sm font-semibold text-black mb-4 uppercase tracking-wide">
               Explore
             </h3>
 
@@ -46,8 +46,8 @@ export default function Footer() {
           </div>
 
           {/* Account */}
-          <div>
-            <h3 className="text-sm font-semibold text-black mb-5 uppercase tracking-wide">
+          <div className="text-center sm:text-left">
+            <h3 className="text-xs sm:text-sm font-semibold text-black mb-4 uppercase tracking-wide">
               Account
             </h3>
 
@@ -71,8 +71,8 @@ export default function Footer() {
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-5">
-            <h3 className="text-sm font-semibold text-black uppercase tracking-wide">
+          <div className="space-y-5 text-center sm:text-left">
+            <h3 className="text-xs sm:text-sm font-semibold text-black uppercase tracking-wide">
               Stay Updated
             </h3>
 
@@ -80,13 +80,14 @@ export default function Footer() {
               Get notified about new launches and special offers.
             </p>
 
-            <div className=" flex items-center border border-gray-300 rounded-full overflow-hidden bg-white">
+            {/* Responsive Newsletter */}
+            <div className="flex flex-col sm:flex-row items-stretch border border-gray-300 rounded-2xl overflow-hidden bg-white">
               <input
                 type="email"
                 placeholder="Your email"
                 className="flex-1 px-5 py-3 text-sm outline-none bg-transparent"
               />
-              <button className="px-4.5 py-3 bg-black text-white text-sm font-medium hover:opacity-90 transition">
+              <button className="px-6 py-3 bg-black text-white text-sm font-medium hover:opacity-90 transition">
                 Send
               </button>
             </div>
@@ -96,9 +97,10 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-200 py-8 text-center text-xs text-gray-500">
+      <div className="border-t border-gray-200 py-6 text-center text-xs text-gray-500 px-4">
         © {new Date().getFullYear()} Cartify. All rights reserved.
       </div>
+
     </footer>
   );
 }

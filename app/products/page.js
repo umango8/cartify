@@ -1,36 +1,48 @@
+// "use client";
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "../../context/CartContext";
-import AddToCartButton from "../../components/product/AddToCartButton";
 import PageNavigation from "@/components/ui/Pagenation";
+
+const LIMIT = 12;
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const { addToCart } = useCart();
   const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch(
+          `/api/products?page=${page}&limit=${LIMIT}`
+        );
+
         const data = await res.json();
-        setProducts(data);
+
+        setProducts((prev) => [...prev, ...data.products]);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.log(error);
-      } finally {
-        setLoading(false);
       }
+
+      setLoading(false);
     };
 
     fetchProducts();
-  }, []);
+  }, [page]);
 
-  if (loading) {
+  // First load screen
+  if (loading && products.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7]">
         <p className="text-gray-500 text-lg">Loading products...</p>
@@ -39,41 +51,41 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className=" bg-[#f5f5f7] py-1 px-6">
-      <PageNavigation
-  previous="/"
-  next="/cart"
-/>
+    <div className="bg-[#f5f5f7] py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+      
+      <PageNavigation previous="/" next="/cart" />
 
       <div className="max-w-7xl mx-auto">
 
-        <h1 className="text-4xl font-semibold tracking-tight mb-14">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-8 sm:mb-12 lg:mb-14">
           All Products
         </h1>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-10">
           {products.map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-3xl p-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
+              className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 
+              transition-all duration-500 
+              hover:-translate-y-1 sm:hover:-translate-y-2 
+              hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
             >
-              {/* Image */}
               <Link href={`/products/${product._id}`}>
                 <img
-                  src={product.images?.[0] || product.image}
-                  alt={product.name}
-                  className="w-full h-64 object-cover rounded-2xl"
+                  src={product.images?.[0]}
+                  alt={product.title}
+                  className="w-full h-40 sm:h-52 md:h-56 lg:h-64 
+                  object-cover rounded-xl sm:rounded-2xl"
                 />
               </Link>
 
-              {/* Content */}
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
 
-                <h2 className="text-lg font-medium tracking-tight">
-                  {product.name}
+                <h2 className="text-sm sm:text-base lg:text-lg font-medium tracking-tight">
+                  {product.title}
                 </h2>
 
-                <p className="mt-2 text-gray-600 text-sm">
+                <p className="mt-1 sm:mt-2 text-gray-600 text-sm">
                   ₹{product.price}
                 </p>
 
@@ -83,43 +95,42 @@ export default function ProductsPage() {
                     : "Out of Stock"}
                 </p>
 
-                {/* Buttons */}
                 {product.stock > 0 ? (
-                  <div className="mt-5 flex gap-3">
-
-                    {/* Add */}
+                  <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                       onClick={() => addToCart(product)}
-                      className="flex-1 border border-black text-black py-2.5 rounded-full text-sm hover:bg-black hover:text-white transition"
+                      className="w-full border border-black text-black 
+                      py-2 rounded-full text-xs sm:text-sm 
+                      hover:bg-black hover:text-white transition"
                     >
                       Add
                     </button>
 
-                    {/* Buy Now */}
                     <button
                       onClick={() => {
                         addToCart(product);
                         router.push("/checkout");
                       }}
-                      className="flex-1 bg-black text-white py-2.5 rounded-full text-sm hover:opacity-90 transition"
+                      className="w-full bg-black text-white 
+                      py-2 rounded-full text-xs sm:text-sm 
+                      hover:opacity-90 transition"
                     >
                       Buy Now
                     </button>
-
                   </div>
                 ) : (
                   <button
                     disabled
-                    className="mt-5 w-full bg-gray-300 text-white py-2.5 rounded-full text-sm cursor-not-allowed"
+                    className="mt-4 w-full bg-gray-300 text-white 
+                    py-2 rounded-full text-xs sm:text-sm cursor-not-allowed"
                   >
                     Out of Stock
                   </button>
                 )}
 
-                {/* View Link */}
                 <Link
                   href={`/products/${product._id}`}
-                  className="block mt-4 text-sm text-gray-500 hover:opacity-60 transition"
+                  className="block mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 hover:opacity-60 transition"
                 >
                   View Details →
                 </Link>
@@ -128,6 +139,20 @@ export default function ProductsPage() {
             </div>
           ))}
         </div>
+
+        {/* LOAD MORE BUTTON */}
+        {page < totalPages && (
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => setPage((prev) => prev + 1)}
+              className="px-8 py-3 bg-black text-white rounded-full 
+                         hover:bg-gray-800 hover:scale-105 
+                         transition duration-300 shadow-md"
+            >
+              {loading ? "Loading..." : "Load More Products"}
+            </button>
+          </div>
+        )}
 
       </div>
     </div>

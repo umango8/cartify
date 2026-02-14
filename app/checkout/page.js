@@ -89,65 +89,77 @@ export default function CheckoutPage() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#f5f5f7] py-20 px-6">
-      <div className="max-w-3xl mx-auto">
+return (
+  <div className="min-h-screen bg-[#f5f5f7] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+    
+    <div className="max-w-4xl mx-auto">
 
-        <h1 className="text-4xl font-semibold tracking-tight mb-14">
-          Checkout
-        </h1>
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-10 sm:mb-14">
+        Checkout
+      </h1>
 
-        {/* Order Summary */}
-        <div className="bg-white rounded-3xl p-10 shadow-[0_15px_50px_rgba(0,0,0,0.05)]">
+      {/* Order Summary Card */}
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 
+      shadow-[0_15px_50px_rgba(0,0,0,0.05)]">
 
-          <h2 className="text-2xl font-medium mb-8">
-            Order Summary
-          </h2>
+        <h2 className="text-lg sm:text-xl lg:text-2xl font-medium mb-6 sm:mb-8">
+          Order Summary
+        </h2>
 
-          <div className="space-y-6">
-            {cartItems.map((item) => (
-              <div
-                key={item._id}
-                className="flex justify-between items-center border-b border-gray-100 pb-4"
-              >
-                <div>
-                  <p className="font-medium text-black">
-                    {item.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Qty: {item.quantity}
-                  </p>
-                </div>
-
-                <p className="font-medium">
-                  ₹{item.price * item.quantity}
+        {/* Items */}
+        <div className="space-y-5 sm:space-y-6">
+          {cartItems.map((item) => (
+            <div
+              key={item._id}
+              className="flex justify-between items-start sm:items-center 
+              border-b border-gray-100 pb-4"
+            >
+              <div>
+                <p className="font-medium text-black text-sm sm:text-base">
+                  {item.name}
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Qty: {item.quantity}
                 </p>
               </div>
-            ))}
-          </div>
 
-          <div className="flex justify-between items-center mt-10 text-lg font-medium">
-            <span>Total</span>
-            <span>₹{total}</span>
-          </div>
-
-          {error && (
-            <p className="mt-6 text-sm text-red-500">
-              {error}
-            </p>
-          )}
-
-          <button
-            onClick={handlePlaceOrder}
-            disabled={loading}
-            className="mt-8 w-full bg-black text-white py-3 rounded-full text-sm font-medium hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "Placing Order..." : "Place Order"}
-          </button>
-
+              <p className="font-medium text-sm sm:text-base">
+                ₹{item.price * item.quantity}
+              </p>
+            </div>
+          ))}
         </div>
 
+        {/* Total */}
+        <div className="flex justify-between items-center mt-8 sm:mt-10 
+        text-base sm:text-lg font-medium">
+          <span>Total</span>
+          <span>₹{total}</span>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <p className="mt-6 text-sm text-red-500">
+            {error}
+          </p>
+        )}
+
+        {/* Button */}
+        <button
+          onClick={handlePlaceOrder}
+          disabled={loading}
+          className="mt-8 w-full bg-black text-white py-3 sm:py-4 
+          rounded-full text-sm sm:text-base font-medium 
+          hover:opacity-90 transition 
+          disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? "Placing Order..." : "Place Order"}
+        </button>
+
       </div>
+
     </div>
-  );
+  </div>
+);
+
 }

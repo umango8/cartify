@@ -36,107 +36,113 @@ export default function CartPage() {
     );
   }
 
-  return (
-    <div className=" bg-[#f5f5f7] py-20 px-6">
-         <PageNavigation
-                previous="/"
-                next="/cart"
-              />
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-16">
+return (
+  <div className="bg-[#f5f5f7] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+    
+    <PageNavigation previous="/" next="/cart" />
 
-        {/* LEFT: CART ITEMS */}
-        <div className="md:col-span-2 space-y-8">
-          <h1 className="text-4xl font-semibold tracking-tight mb-10">
-            Your Cart
-          </h1>
+    <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16">
 
-          {cartItems.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded-3xl p-6 shadow-[0_15px_50px_rgba(0,0,0,0.05)] flex justify-between items-center"
-            >
-              <div>
-                <h2 className="text-lg font-medium text-black">
-                  {item.name}
-                </h2>
+      {/* LEFT: CART ITEMS */}
+      <div className="lg:col-span-2 space-y-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight">
+          Your Cart
+        </h1>
 
-                <p className="text-sm text-gray-500 mt-1">
-                  ₹{item.price} × {item.quantity}
-                </p>
+        {cartItems.map((item) => (
+          <div
+            key={item._id}
+            className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 
+            shadow-[0_15px_50px_rgba(0,0,0,0.05)] 
+            flex flex-col sm:flex-row sm:justify-between 
+            sm:items-center gap-6"
+          >
+            {/* Product Info */}
+            <div>
+              <h2 className="text-base sm:text-lg font-medium text-black">
+                {item.name}
+              </h2>
 
-                <p className="text-sm font-medium mt-2">
-                  ₹{item.price * item.quantity}
-                </p>
-              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                ₹{item.price} × {item.quantity}
+              </p>
 
-              {/* Quantity Controls */}
-              <div className="flex items-center gap-6">
+              <p className="text-sm font-medium mt-2">
+                ₹{item.price * item.quantity}
+              </p>
+            </div>
 
-                <div className="flex items-center border border-gray-300 rounded-full overflow-hidden">
-                  <button
-                    onClick={() =>
-                      updateQuantity(item._id, item.quantity - 1)
-                    }
-                    disabled={item.quantity <= 1}
-                    className="px-4 py-2 text-sm hover:bg-gray-100 transition disabled:opacity-40"
-                  >
-                    −
-                  </button>
+            {/* Controls */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
 
-                  <span className="px-4 text-sm">
-                    {item.quantity}
-                  </span>
-
-                  <button
-                    onClick={() =>
-                      updateQuantity(item._id, item.quantity + 1)
-                    }
-                    disabled={item.quantity >= item.stock}
-                    className="px-4 py-2 text-sm hover:bg-gray-100 transition disabled:opacity-40"
-                  >
-                    +
-                  </button>
-                </div>
-
+              {/* Quantity */}
+              <div className="flex items-center border border-gray-300 rounded-full overflow-hidden">
                 <button
-                  onClick={() => removeFromCart(item._id)}
-                  className="text-sm text-gray-500 hover:text-black transition"
+                  onClick={() =>
+                    updateQuantity(item._id, item.quantity - 1)
+                  }
+                  disabled={item.quantity <= 1}
+                  className="px-4 py-2 text-sm hover:bg-gray-100 transition disabled:opacity-40"
                 >
-                  Remove
+                  −
                 </button>
 
+                <span className="px-4 text-sm">
+                  {item.quantity}
+                </span>
+
+                <button
+                  onClick={() =>
+                    updateQuantity(item._id, item.quantity + 1)
+                  }
+                  disabled={item.quantity >= item.stock}
+                  className="px-4 py-2 text-sm hover:bg-gray-100 transition disabled:opacity-40"
+                >
+                  +
+                </button>
               </div>
+
+              <button
+                onClick={() => removeFromCart(item._id)}
+                className="text-sm text-gray-500 hover:text-black transition"
+              >
+                Remove
+              </button>
             </div>
-          ))}
-        </div>
-
-        {/* RIGHT: ORDER SUMMARY */}
-        <div className="bg-white rounded-3xl p-8 shadow-[0_15px_50px_rgba(0,0,0,0.05)] h-fit">
-
-          <h2 className="text-2xl font-medium mb-8">
-            Order Summary
-          </h2>
-
-          <div className="flex justify-between mb-6 text-gray-600">
-            <span>Subtotal</span>
-            <span>₹{total}</span>
           </div>
-
-          <div className="flex justify-between text-lg font-medium mb-10">
-            <span>Total</span>
-            <span>₹{total}</span>
-          </div>
-
-          <Link
-            href="/checkout"
-            className="block text-center bg-black text-white py-3 rounded-full font-medium hover:opacity-90 transition"
-          >
-            Proceed to Checkout
-          </Link>
-
-        </div>
-
+        ))}
       </div>
+
+      {/* RIGHT: ORDER SUMMARY */}
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 
+      shadow-[0_15px_50px_rgba(0,0,0,0.05)] 
+      h-fit lg:sticky lg:top-24">
+
+        <h2 className="text-xl sm:text-2xl font-medium mb-6 sm:mb-8">
+          Order Summary
+        </h2>
+
+        <div className="flex justify-between mb-4 text-gray-600 text-sm sm:text-base">
+          <span>Subtotal</span>
+          <span>₹{total}</span>
+        </div>
+
+        <div className="flex justify-between text-base sm:text-lg font-medium mb-8 sm:mb-10">
+          <span>Total</span>
+          <span>₹{total}</span>
+        </div>
+
+        <Link
+          href="/checkout"
+          className="block text-center bg-black text-white py-3 rounded-full 
+          font-medium hover:opacity-90 transition"
+        >
+          Proceed to Checkout
+        </Link>
+      </div>
+
     </div>
-  );
+  </div>
+);
+
 }

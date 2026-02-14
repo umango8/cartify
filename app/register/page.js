@@ -66,118 +66,128 @@ export default function RegisterPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] px-6">
-      <div className="w-full max-w-md">
+return (
+  <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div className="w-full max-w-md">
 
-        <div className="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-10">
-          
-          <h2 className="text-3xl font-semibold tracking-tight text-center">
-            Create Account
-          </h2>
+      <div className="bg-white rounded-2xl sm:rounded-3xl 
+      shadow-[0_20px_60px_rgba(0,0,0,0.08)] 
+      p-6 sm:p-8 lg:p-10">
 
-          <p className="text-center text-gray-500 mt-2 text-sm">
-            Join Cartify and start shopping
-          </p>
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">
+          Create Account
+        </h2>
 
-          <form onSubmit={handleRegister} className="mt-8 space-y-5">
+        <p className="text-center text-gray-500 mt-2 text-sm">
+          Join Cartify and start shopping
+        </p>
 
-            {/* Username */}
-            <div>
-              <label className="text-sm text-gray-600">Username</label>
-              <input
-                type="text"
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                placeholder="john_doe"
-                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
-                focus:bg-white border transition-all duration-300
-                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
-              />
-            </div>
+        <form onSubmit={handleRegister} className="mt-8 space-y-5">
 
-            {/* Email */}
-            <div>
-              <label className="text-sm text-gray-600">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
-                focus:bg-white border transition-all duration-300
-                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-sm text-gray-600">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
-                focus:bg-white border transition-all duration-300
-                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="text-sm text-gray-600">Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
-                focus:bg-white border transition-all duration-300
-                ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
-              />
-
-              {/* Error Message */}
-              {error && (
-                <p className="mt-2 text-sm text-red-500">
-                  {error}
-                </p>
-              )}
-            </div>
-
-            {/* Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-4 bg-black text-white py-3 rounded-full font-medium 
-              hover:opacity-90 hover:scale-[1.02] transition-all duration-300
-              disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? "Creating account..." : "Sign Up"}
-            </button>
-          </form>
-
-          <div className="my-8 flex items-center">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="px-4 text-sm text-gray-400">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
+          {/* Username */}
+          <div>
+            <label className="text-sm text-gray-600">Username</label>
+            <input
+              type="text"
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              placeholder="john_doe"
+              className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+              focus:bg-white border transition-all duration-300 
+              text-sm sm:text-base
+              ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+            />
           </div>
 
-          <p className="text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-black hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
+          {/* Email */}
+          <div>
+            <label className="text-sm text-gray-600">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+              focus:bg-white border transition-all duration-300 
+              text-sm sm:text-base
+              ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="text-sm text-gray-600">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+              focus:bg-white border transition-all duration-300 
+              text-sm sm:text-base
+              ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="text-sm text-gray-600">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              className={`w-full mt-2 px-4 py-3 rounded-xl bg-gray-100 
+              focus:bg-white border transition-all duration-300 
+              text-sm sm:text-base
+              ${error ? "border-red-500 focus:border-red-500" : "border-transparent focus:border-black"}`}
+            />
+
+            {error && (
+              <p className="mt-2 text-sm text-red-500">
+                {error}
+              </p>
+            )}
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-4 bg-black text-white py-3 sm:py-4 
+            rounded-full text-sm sm:text-base font-medium 
+            hover:opacity-90 hover:scale-[1.02] transition-all duration-300
+            disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? "Creating account..." : "Sign Up"}
+          </button>
+
+        </form>
+
+        <div className="my-8 flex items-center">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="px-4 text-sm text-gray-400">or</span>
+          <div className="flex-1 h-px bg-gray-200" />
         </div>
+
+        <p className="text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-black hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
+
       </div>
     </div>
-  );
+  </div>
+);
+
 }

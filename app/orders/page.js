@@ -89,117 +89,120 @@ export default function OrdersPage() {
     );
   }
 
-  return (
-    <div className=" bg-[#f5f5f7] py-20 px-6">
-        <PageNavigation
-              previous="/"
-              next="/cart"
-            />
-      <div className="max-w-5xl mx-auto">
+return (
+  <div className="bg-[#f5f5f7] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+    
+    <PageNavigation previous="/" next="/cart" />
 
-        <h1 className="text-4xl font-semibold tracking-tight mb-14">
-          My Orders
-        </h1>
+    <div className="max-w-5xl mx-auto">
 
-        {error && (
-          <p className="mb-6 text-sm text-red-500">
-            {error}
-          </p>
-        )}
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-10 sm:mb-14">
+        My Orders
+      </h1>
 
-        {orders.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-sm">
-            <p className="text-gray-600 text-lg">
-              You haven’t placed any orders yet.
-            </p>
-            <button
-              onClick={() => router.push("/products")}
-              className="mt-6 bg-black text-white px-8 py-3 rounded-full hover:opacity-90 transition"
-            >
-              Browse Products
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-10">
-            {orders.map((order) => (
-              <div
-                key={order._id}
-                className="bg-white rounded-3xl p-8 shadow-[0_15px_50px_rgba(0,0,0,0.05)]"
-              >
-                {/* Header */}
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Order #{order._id.slice(-6)}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-
-                  <span
-                    className={`text-xs px-4 py-1 rounded-full capitalize ${
-                      order.status === "cancelled"
-                        ? "bg-gray-200 text-gray-600"
-                        : order.status === "delivered"
-                        ? "bg-black text-white"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
-
-                {/* Items */}
-              <div className="space-y-4">
-  {order.items.map((item) => {
-    const price = Number(item.product?.price || 0);
-    const total = price * item.quantity;
-
-    return (
-      <div
-        key={item._id}
-        className="flex justify-between items-center border-b border-gray-100 pb-3"
-      >
-        <div>
-          <p className="font-medium text-black">
-            {item.product?.name || "Product"}
-          </p>
-          <p className="text-sm text-gray-500">
-            Qty: {item.quantity}
-          </p>
-        </div>
-
-        <p className="font-medium">
-          ₹{total}
+      {error && (
+        <p className="mb-6 text-sm text-red-500">
+          {error}
         </p>
-      </div>
-    );
-  })}
-</div>
+      )}
 
-
-                {/* Footer */}
-                <div className="flex justify-between items-center mt-6">
-                  <p className="text-lg font-medium">
-                    Total: ₹{order.totalAmount}
+      {orders.length === 0 ? (
+        <div className="text-center py-14 sm:py-20 bg-white rounded-2xl sm:rounded-3xl shadow-sm">
+          <p className="text-gray-600 text-base sm:text-lg">
+            You haven’t placed any orders yet.
+          </p>
+          <button
+            onClick={() => router.push("/products")}
+            className="mt-6 bg-black text-white px-6 sm:px-8 py-3 rounded-full hover:opacity-90 transition"
+          >
+            Browse Products
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-8 sm:space-y-10">
+          {orders.map((order) => (
+            <div
+              key={order._id}
+              className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 
+              shadow-[0_15px_50px_rgba(0,0,0,0.05)]"
+            >
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                
+                <div>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    Order #{order._id.slice(-6)}
                   </p>
-
-                  {order.status === "pending" && (
-                    <button
-                      onClick={() => cancelOrder(order._id)}
-                      className="border border-black px-6 py-2 rounded-full text-sm hover:bg-black hover:text-white transition"
-                    >
-                      Cancel Order
-                    </button>
-                  )}
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {new Date(order.createdAt).toLocaleString()}
+                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
 
-      </div>
+                <span
+                  className={`text-xs px-4 py-1 rounded-full capitalize w-fit ${
+                    order.status === "cancelled"
+                      ? "bg-gray-200 text-gray-600"
+                      : order.status === "delivered"
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {order.status}
+                </span>
+              </div>
+
+              {/* Items */}
+              <div className="space-y-4">
+                {order.items.map((item) => {
+                  const price = Number(item.product?.price || 0);
+                  const total = price * item.quantity;
+
+                  return (
+                    <div
+                      key={item._id}
+                      className="flex justify-between items-start sm:items-center 
+                      border-b border-gray-100 pb-3"
+                    >
+                      <div>
+                        <p className="font-medium text-black text-sm sm:text-base">
+                          {item.product?.name || "Product"}
+                        </p>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                          Qty: {item.quantity}
+                        </p>
+                      </div>
+
+                      <p className="font-medium text-sm sm:text-base">
+                        ₹{total}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Footer */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-6">
+                <p className="text-base sm:text-lg font-medium">
+                  Total: ₹{order.totalAmount}
+                </p>
+
+                {order.status === "pending" && (
+                  <button
+                    onClick={() => cancelOrder(order._id)}
+                    className="border border-black px-5 py-2 rounded-full text-sm 
+                    hover:bg-black hover:text-white transition w-fit"
+                  >
+                    Cancel Order
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
     </div>
-  );
+  </div>
+);
+
 }

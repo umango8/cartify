@@ -54,90 +54,83 @@ export default function ProductDetails() {
     );
   }
 
-  return (
-    <div className=" bg-[#f5f5f7] py-3 px-6">
-         <PageNavigation
-        previous="/"
-        next="/cart"
-      />
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
+return (
+  <div className="bg-[#f5f5f7] py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+    
+    <PageNavigation previous="/" next="/cart" />
 
-        {/* IMAGE SECTION */}
-        <div>
-          {selectedImage && (
-            <div className="bg-white rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-              <img
-                src={selectedImage}
-                alt={product.name}
-                className="w-full h-[500px] object-cover rounded-2xl"
-              />
-            </div>
-          )}
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
 
-          {/* Thumbnails */}
-          <div className="flex gap-4 mt-6">
-            {product.images?.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt="thumbnail"
-                onClick={() => setSelectedImage(img)}
-                className={`w-20 h-20 object-cover rounded-xl cursor-pointer border transition-all duration-300
-                ${
-                  selectedImage === img
-                    ? "border-black scale-105"
-                    : "border-gray-200 hover:border-black"
-                }`}
-              />
-            ))}
+      {/* IMAGE SECTION */}
+      <div>
+
+        {selectedImage && (
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 
+          shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+            <img
+              src={selectedImage}
+              alt={product.name}
+              className="w-full h-[300px] sm:h-[400px] lg:h-[500px] 
+              object-cover rounded-xl sm:rounded-2xl"
+            />
           </div>
+        )}
+
+        {/* Thumbnails */}
+        <div className="flex gap-3 sm:gap-4 mt-5 sm:mt-6 
+        overflow-x-auto pb-2">
+          {product.images?.map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              alt="thumbnail"
+              onClick={() => setSelectedImage(img)}
+              className={`w-16 h-16 sm:w-20 sm:h-20 
+              object-cover rounded-lg sm:rounded-xl 
+              cursor-pointer border transition-all duration-300 flex-shrink-0
+              ${
+                selectedImage === img
+                  ? "border-black scale-105"
+                  : "border-gray-200 hover:border-black"
+              }`}
+            />
+          ))}
         </div>
 
-        {/* PRODUCT INFO */}
-        <div className="flex flex-col justify-center">
+      </div>
 
-          <h1 className="text-4xl font-semibold tracking-tight mb-6">
-            {product.name}
-          </h1>
+      {/* PRODUCT INFO */}
+      <div className="flex flex-col justify-center">
 
-          <p className="text-3xl font-medium text-black mb-4">
-            ₹{product.price}
-          </p>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-4 sm:mb-6">
+          {product.name}
+        </h1>
 
-          <p className="text-sm text-gray-500 mb-8">
-            {product.stock > 0
-              ? `In Stock (${product.stock} available)`
-              : "Currently Out of Stock"}
-          </p>
+        <p className="text-xl sm:text-2xl lg:text-3xl font-medium text-black mb-3 sm:mb-4">
+          ₹{product.price}
+        </p>
 
-          <p className="text-gray-700 leading-relaxed mb-10 max-w-lg">
-            {product.description}
-          </p>
+        <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8">
+          {product.stock > 0
+            ? `In Stock (${product.stock} available)`
+            : "Currently Out of Stock"}
+        </p>
 
-          {/* ACTION BUTTONS */}
-          <div className="space-y-4">
+        <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-8 sm:mb-10 max-w-xl">
+          {product.description}
+        </p>
 
-            {/* Add To Cart (with stock validation inside component) */}
-            <AddToCartButton product={product} />
+        {/* ACTION BUTTONS */}
+        <div className="space-y-4 max-w-sm">
 
-            {/* Buy Now */}
-            {/* {product.stock > 0 && (
-              <button
-                onClick={() => {
-                  addToCart(product);
-                  router.push("/checkout");
-                }}
-                className="w-full bg-black text-white py-3 rounded-full text-sm font-medium hover:opacity-90 transition"
-              >
-                Buy Now
-              </button>
-            )} */}
-
-          </div>
+          <AddToCartButton product={product} />
 
         </div>
 
       </div>
+
     </div>
-  );
+  </div>
+);
+
 }

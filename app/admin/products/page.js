@@ -26,7 +26,7 @@ export default function AdminProductsPage() {
     try {
       const res = await fetch("/api/products", { cache: "no-store" });
       const data = await res.json();
-      setProducts(data);
+      setProducts(data.products);
     } catch (error) {
       console.log(error);
     } finally {
