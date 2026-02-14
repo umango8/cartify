@@ -1,8 +1,10 @@
+export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+
 
 export async function POST(req) {
   try {
