@@ -3,22 +3,7 @@ import Product from "@/models/Product";
 import { NextResponse } from "next/server";
 
 
-// ✅ GET ALL PRODUCTS
-// export async function GET() {
-//   try {
-//     await connectDB();
 
-//     const products = await Product.find().sort({ createdAt: -1 });
-
-//     return NextResponse.json(products, { status: 200 });
-//   } catch (error) {
-//     console.log(error);
-//     return NextResponse.json(
-//       { message: "Failed to fetch products" },
-//       { status: 500 }
-//     );
-//   }
-// }
 // ✅ GET PRODUCTS WITH PAGINATION
 export async function GET(req) {
   try {
@@ -29,14 +14,27 @@ export async function GET(req) {
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 12;
 
+    const featured = searchParams.get("featured");
+    const trending = searchParams.get("trending");
+
     const skip = (page - 1) * limit;
 
-    const products = await Product.find()
+    let filter = {};
+
+    if (featured === "true") {
+      filter.isFeatured = true;
+    }
+
+    if (trending === "true") {
+      filter.isTrending = true;
+    }
+
+    const products = await Product.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Product.countDocuments();
+    const total = await Product.countDocuments(filter);
 
     return NextResponse.json(
       {
@@ -56,6 +54,7 @@ export async function GET(req) {
     );
   }
 }
+
 
 
 // ✅ ADD NEW PRODUCT

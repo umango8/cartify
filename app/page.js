@@ -13,22 +13,51 @@ export default function Home() {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+const [trendingProducts, setTrendingProducts] = useState([]);
 
+
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const res = await fetch("/api/products");
+  //       const data = await res.json();
+  //       setProducts(data.products);
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProducts();
+  // }, []);
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        setProducts(data.products);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const featuredRes = await fetch("/api/products?featured=true&limit=4");
+      const featuredData = await featuredRes.json();
 
-    fetchProducts();
-  }, []);
+      const trendingRes = await fetch("/api/products?trending=true&limit=6");
+      const trendingData = await trendingRes.json();
+
+      const heroRes = await fetch("/api/products?limit=3");
+      const heroData = await heroRes.json();
+
+      setProducts(heroData.products);
+      setFeaturedProducts(featuredData.products);
+      setTrendingProducts(trendingData.products);
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   if (loading) {
     return (
@@ -89,7 +118,7 @@ return (
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-          {products.slice(0, 4).map((product) => (
+       {featuredProducts.map((product)  => (
             <motion.div
               key={product._id}
               whileHover={{ y: -6 }}
@@ -154,8 +183,7 @@ return (
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-          {products
-  .filter((p) => p.isTrending).map((product) => (
+         {trendingProducts.map((product) => (
             <motion.div
               key={product._id}
               whileHover={{ scale: 1.02 }}
