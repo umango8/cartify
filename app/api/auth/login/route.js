@@ -1,14 +1,18 @@
 export const dynamic = "force-dynamic";
-import { connectDB } from "@/lib/db";
+import connectDB from "@/lib/db";
+
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
-
 export async function POST(req) {
   try {
     await connectDB();
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not defined");
+    }
 
     const { email, password } = await req.json();
 
@@ -19,7 +23,8 @@ export async function POST(req) {
       );
     }
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return NextResponse.json(
@@ -27,12 +32,13 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-if (user.isBlocked) {
-  return NextResponse.json(
-    { message: "Your account has been blocked" },
-    { status: 403 }
-  );
-}
+
+    if (user.isBlocked) {
+      return NextResponse.json(
+        { message: "Your account has been blocked" },
+        { status: 403 }
+      );
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -44,10 +50,7 @@ if (user.isBlocked) {
     }
 
     const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-      },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -65,8 +68,9 @@ if (user.isBlocked) {
       },
       { status: 200 }
     );
+
   } catch (error) {
-    console.log(error);
+    console.error("LOGIN ERROR:", error);
     return NextResponse.json(
       { message: "Server error" },
       { status: 500 }
