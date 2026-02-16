@@ -2,91 +2,67 @@ import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 import { NextResponse } from "next/server";
 
-export async function GET(req, context) {
+// GET
+export async function GET(req, { params }) {
   try {
     await connectDB();
-
-    // ✅ FIX for Next.js 16
-    const { id } = await context.params;
-
-    console.log("Received ID:", id);
+    const { id } = await params;
 
     const product = await Product.findById(id);
 
     if (!product) {
-      return NextResponse.json(
-        { message: "Product not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product, { status: 200 });
+    return NextResponse.json(product);
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { message: "Invalid ID or server error" },
       { status: 500 }
     );
   }
 }
-export async function DELETE(req, context) {
+
+// DELETE
+export async function DELETE(req, { params }) {
   try {
     await connectDB();
+    const { id } = await params;
 
-    const { id } = await context.params;
-
-    const product = await Product.findById(id);
+    const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
-      return NextResponse.json(
-        { message: "Product not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
-    await product.deleteOne();
-
-    return NextResponse.json(
-      { message: "Product deleted" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Product deleted" });
 
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Delete failed" },
-      { status: 500 }
-    );
+    console.error(error);
+    return NextResponse.json({ message: "Delete failed" }, { status: 500 });
   }
 }
-export async function PUT(req, context) {
+
+// PUT
+export async function PUT(req, { params }) {
   try {
     await connectDB();
+    const { id } = await params;
 
-    const { id } = await context.params;
     const body = await req.json();
 
-    const product = await Product.findByIdAndUpdate(
-      id,
-      body,
-      { new: true }
-    );
+    const product = await Product.findByIdAndUpdate(id, body, { new: true });
 
     if (!product) {
-      return NextResponse.json(
-        { message: "Product not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product, { status: 200 });
+    return NextResponse.json(product);
 
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Update failed" },
-      { status: 500 }
-    );
+    console.error(error);
+    return NextResponse.json({ message: "Update failed" }, { status: 500 });
   }
 }
